@@ -7,3 +7,14 @@ spring:
   datasource:
     generate-unique-name: false
     name: tacocloud
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  security:
+    oauth2:
+      client:
+        registration:
+          facebook:
+            clientId: <facebook client id>
+            clientSecret: <facebook client secret>
+            scope: email, public_profile

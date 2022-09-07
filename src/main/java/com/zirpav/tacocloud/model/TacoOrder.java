@@ -4,8 +4,13 @@ import lombok.Data;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -19,8 +24,12 @@ public class TacoOrder {
 
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
     private Date placedAt;
+
+    @ManyToOne
+    private User user;
 
     @NotBlank(message="Delivery name is required")
     private String deliveryName;
@@ -39,10 +48,15 @@ public class TacoOrder {
     @Digits(integer = 3, fraction = 0, message = "Invalid CVV")
     private String ccCVV;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity=Taco.class)
     private List<Taco> tacos = new ArrayList<>();
 
     public void addTaco(final Taco taco) {
         this.tacos.add(taco);
+    }
+
+    @PrePersist
+    void placedAt() {
+        this.placedAt = new Date();
     }
 }
